@@ -3,7 +3,8 @@ const {
   getAllUsers,
   deleteUser,
   promoteUserRole,
-  getProfileById
+  getProfileById,
+  getAllDoctors
 } = require("../controllers/adminController.js");
 const { protect } = require("../middleware/authMiddleware");
 const authorizeRoles = require("../middleware/authorizeRole");
@@ -26,6 +27,11 @@ router.get(
   "/profile/:userId",
   protect,
   getProfileById
+);
+router.get(
+  "/doctorapprove",
+  protect,
+  getAllDoctors
 );
 
 module.exports = router;

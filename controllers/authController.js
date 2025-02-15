@@ -28,7 +28,7 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'posts',
+    folder: 'users',
     resource_type: 'image',
   },
 });
@@ -165,6 +165,9 @@ const loginUser = async (req, res) => {
       return res
         .status(403)
         .json({ message: "Please verify your email before logging in" });
+    }
+    if (user.role === "blacklist") {
+      return res.status(403).json({ message: "Your account has been blacklisted. Contact support." });
     }
 
     if (await user.matchPassword(password)) {

@@ -20,6 +20,24 @@ const getAllUsers = async (req, res) => {
     }
   };
 
+  const getAllDoctors = async (req, res) => {
+    try {
+      // Initialize an empty query object
+      let query = {};
+  
+      // If a status query parameter is provided, filter by doctorInfo.status
+      if (req.query.status) {
+        query["doctorInfo.status"] = req.query.status;
+      }
+  
+      const users = await User.find(query);
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to retrieve users' });
+    }
+  };
+  
+
   const deleteUser = async (req, res) => {
     try {
       const user = await User.findById(req.params.userId);
@@ -84,5 +102,6 @@ const getAllUsers = async (req, res) => {
     getAllUsers,
     deleteUser,
     promoteUserRole,
-    getProfileById
+    getProfileById,
+    getAllDoctors,
   };

@@ -22,7 +22,7 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'images',
+    folder: 'users',
     resource_type: 'image',
   },
 });
@@ -76,6 +76,7 @@ const updateUserProfile = async (req, res) => {
 
     try {
       const user = await User.findById(req.params.userId);
+      console.log(req.body)
 
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -112,7 +113,7 @@ const updateUserProfile = async (req, res) => {
         office: updatedUser.office,
         officePlace: updatedUser.officePlace,
         role: updatedUser.role,
-        token: generateToken(updatedUser._id), // Ensure this function is secure
+        token: generateToken(updatedUser._id), 
       });
     } catch (error) {
       console.error("Error updating user profile:", error);

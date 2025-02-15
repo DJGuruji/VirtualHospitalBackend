@@ -27,7 +27,7 @@ const UserSchema = new mongoose.Schema({
   },
   role: { 
     type: String, 
-    enum: ["user", "staff", "admin"], 
+    enum: ["user", "staff","doctor", "admin","block"], 
     default: "user" 
   },
   photo: { 
@@ -73,7 +73,16 @@ const UserSchema = new mongoose.Schema({
   deletedAt: { 
     type: Date, 
     default: null // For soft deletion
+  },
+  doctorInfo: {
+    certificate: { type: String }, 
+    specialization: { type: String },
+    registerNumber: { type: String,  minlength: 6, maxlength: 6 },
+    consultingCenter:{ type: String},
+    consultingPlace: { type: String },
+    status: { type: String, enum: ['default','pending', 'block', 'active'], default: 'default' }
   }
+
 }, {
   timestamps: true // Automatically adds createdAt and updatedAt fields
 });
