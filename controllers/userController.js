@@ -88,10 +88,10 @@ const updateUserProfile = async (req, res) => {
       user.email = req.body.email ?? user.email;
       
      
-      if (req.file) {
-        user.photo = req.file.path;
-        
+      if (req.files && req.files.photo) {
+        user.photo = req.files.photo[0].path;
       }
+      
 
       user.state = req.body.state ?? user.state;
       user.job = req.body.job ?? user.job;
