@@ -247,30 +247,36 @@ const forgotPassword = async (req, res) => {
   }
 };
 
+const passwordSendEmail = (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/reset-password.html"));
+}
+
+
 const resetPassword = async (req, res) => {
-  const { currentPassword, newPassword } = req.body;
+  const { token } = req.params;
+  const { newPassword } = req.body;
 
   try {
-    const user = await User.findById(req.params.userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpire: { $gt: Date.now() }, 
+    });
 
-    const isMatch = await bcrypt.compare(currentPassword, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Current password is incorrect" });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired token" });
     }
 
     // const salt = await bcrypt.genSalt(10);
-    // const hashedPassword = await bcrypt.hash(newPassword, salt);
+    // user.password = await bcrypt.hash(newPassword, salt);
 
-    // user.password = hashedPassword;
-    user.password = newPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
     await user.save();
 
     res.json({ success: true, message: "Password updated successfully" });
   } catch (error) {
-    console.error("Error updating password:", error);
+    console.error("Error resetting password:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -281,4 +287,5 @@ module.exports = {
   loginUser,
   forgotPassword,
   resetPassword,
+  passwordSendEmail,
 };

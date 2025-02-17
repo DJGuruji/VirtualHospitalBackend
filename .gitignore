@@ -8,6 +8,7 @@ yarn-error.log*
 # Node modules
 node_modules/
 
+/public/uploads
 # Environment variables
 .env
 .env.local
