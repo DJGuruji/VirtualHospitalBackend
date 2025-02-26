@@ -75,13 +75,19 @@ const UserSchema = new mongoose.Schema({
     default: null // For soft deletion
   },
   doctorInfo: {
+    title: { type: String }, 
+    degree: { type: String },
+    additionalDegree: [{ type: String }],  
+    additionalDegreeCertificate: [{ type: String }],  
     certificate: { type: String }, 
+    registrationCertificate: { type: String }, 
     specialization: { type: String },
-    registerNumber: { type: String,  minlength: 6, maxlength: 6 },
-    consultingCenter:{ type: String},
+    registerNumber: { type: String, minlength: 6, maxlength: 6 },
+    consultingCenter: { type: String },
     consultingPlace: { type: String },
     status: { type: String, enum: ['default','pending', 'block', 'active'], default: 'default' }
   }
+  
 
 }, {
   timestamps: true // Automatically adds createdAt and updatedAt fields
