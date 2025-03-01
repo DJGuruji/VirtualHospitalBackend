@@ -43,6 +43,7 @@ app.use("/api/videoposts", require("./routes/videoPostRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/doctor", require("./routes/doctorRoutes"));
 app.use("/api/book", require("./routes/appointmentRoutes"));
+app.use("/api/review", require("./routes/reviewRoutes"));
 
 app.post('/api/generate-response', async (req, res) => {
   const { prompt } = req.body;

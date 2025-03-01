@@ -10,6 +10,8 @@ const {
   getAllAppointments,
   deleteAppointment,
   updateAppointmentStatus,
+  addRecord,
+  getRecord,
 } = require("../controllers/appointmentController");
 
 router.post("/appointments/book/:id", protect, bookAppointment);
@@ -18,5 +20,8 @@ router.get("/my-appointments", protect, getAppointmentOfUser);
 router.get("/all-appointments", protect, getAllAppointments);
 router.delete("/appointment/:id", protect, deleteAppointment);
 router.put("/appointments/:appointmentId", protect, updateAppointmentStatus);
+router.post("/record",protect,addRecord);
+router.get("/record/:appointmentId",protect,getRecord);
+
 
 module.exports = router;

@@ -3,6 +3,7 @@ const multer = require("multer");
 const User = require("../models/User");
 const path = require("path");
 const Appointment = require("../models/Appointment");
+const HealthRecord = require("../models/HealthRecord");
 const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
 
@@ -129,7 +130,7 @@ const getAppointmentOfUser = async (req, res) => {
   try {
     const appointments = await Appointment.find({
       user: req.user._id,
-    }).populate("doctor", "name specialization");
+    }).populate("doctor", "name specialization photo");
     res.status(200).json(appointments);
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
@@ -230,6 +231,41 @@ Thank you.`;
   }
 };
 
+
+const addRecord = async (req, res) => {
+  try {
+    const { appointment, patientName, doctorName, date, time, disease, drugs } = req.body;
+
+    let record = await HealthRecord.findOne({ appointment });
+
+    if (record) {
+      // Update existing record
+      record.disease = disease;
+      record.drugs = drugs;
+      await record.save();
+      return res.json({ message: "Health record updated", record });
+    }
+
+    // Create new record
+    record = new HealthRecord({ appointment, patientName, doctorName, date, time, disease, drugs });
+    await record.save();
+    res.json({ message: "Health record added", record });
+  } catch (error) {
+    res.status(500).json({ message: "Error adding health record", error });
+  }
+};
+
+const getRecord = async (req, res) => {
+  try {
+    const record = await HealthRecord.findOne({ appointment: req.params.appointmentId });
+    if (!record) return res.status(404).json({ message: "No record found" });
+    res.json(record);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching record", error });
+  }
+};
+
+
 module.exports = {
   bookAppointment,
   getAppointmentAtADoctor,
@@ -237,4 +273,7 @@ module.exports = {
   getAllAppointments,
   deleteAppointment,
   updateAppointmentStatus,
+  addRecord,
+  getRecord,
+
 };
