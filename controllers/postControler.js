@@ -148,7 +148,7 @@ exports.deletePost = async (req, res) => {
 
 exports.likePost = async (req, res) => {
   try {
-    const post = await Post.findById(req.params.postId);
+    let post = await Post.findById(req.params.postId);
     if (!post) return res.status(404).json({ message: "Post not found" });
 
     let liked = false;
@@ -163,9 +163,13 @@ exports.likePost = async (req, res) => {
     post.likesCount = post.likes.length; // ✅ Ensure this updates
 
     await post.save();
+
+    // **Populate likedBy with user details**
+    post = await Post.findById(req.params.postId).populate("likes", "username profilePic");
+
     res.json({ 
       likesCount: post.likesCount, 
-      likedBy: post.likes, 
+      likedBy: post.likes || [], // Now contains user details 
       liked 
     });
   } catch (error) {
@@ -191,7 +195,9 @@ exports.addComment = async (req, res) => {
     post.comments.push(newComment);
     
     await post.save();
-    res.json(post.comments);
+    const updatedpost = await Post.findById(req.params.postId)
+      .populate("comments.user", "name photo");
+    res.json(updatedpost.comments);
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }
